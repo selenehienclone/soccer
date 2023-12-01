@@ -9,6 +9,9 @@ def find_multiple_templates(template_path, image_path, num_occurrences):
     # Set a threshold for the matching result
     threshold = 0.8
 
+    # List to store coordinates of matches
+    match_coordinates = []
+
     for _ in range(num_occurrences):
         # Perform template matching
         result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
@@ -19,6 +22,9 @@ def find_multiple_templates(template_path, image_path, num_occurrences):
             # Get the coordinates of the matched area
             top_left = max_loc
             h, w = template.shape
+
+            # Save coordinates to the list
+            match_coordinates.append((top_left, (top_left[0] + w, top_left[1] + h)))
 
             # Draw a rectangle around the matched region
             bottom_right = (top_left[0] + w, top_left[1] + h)
@@ -35,7 +41,14 @@ def find_multiple_templates(template_path, image_path, num_occurrences):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+    # Return the list of match coordinates
+    return match_coordinates
+
 # Example usage
 template_image_path = 'teamA.png'
 main_image_path = 'team1.png'
-find_multiple_templates(template_image_path, main_image_path, num_occurrences=5)
+matches = find_multiple_templates(template_image_path, main_image_path, num_occurrences=5)
+
+# Print the match coordinates
+for match in matches:
+    print(f'Match Coordinates: {match}')
