@@ -35,24 +35,21 @@ save_path_result = 'result.png'
 crop_image(image_path, save_path_result)
 
 import cv2
-import pytesseract
-from PIL import Image
-
-# Set the path to the Tesseract executable (change this to your Tesseract installation path)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+import easyocr
 
 def identify_number_in_image(image_path):
     # Read the image
     img = cv2.imread(image_path)
 
-    # Convert the image to RGB (required for pytesseract)
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # Convert the image to grayscale
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Use Tesseract to extract text
-    extracted_text = pytesseract.image_to_string(Image.fromarray(img_rgb))
+    # Use EasyOCR to extract text
+    reader = easyocr.Reader(['en'])
+    result = reader.readtext(img_gray)
 
-    # Process the extracted text to find numbers (assuming it's a single number)
-    numbers = [int(s) for s in extracted_text.split() if s.isdigit()]
+    # Process the result to find numbers
+    numbers = [int(entry[1]) for entry in result if entry[1].isdigit()]
 
     # If there are numbers, identify the number
     if numbers:
