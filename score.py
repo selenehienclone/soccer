@@ -4,6 +4,30 @@ from PIL import Image
 
 # Set the path to the Tesseract executable (change this to your Tesseract installation path)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+import cv2
+
+def crop_image(image_path, save_path_result):
+    # Read the image
+    img = cv2.imread(image_path)
+
+    # Get the height and width of the image
+    height, width, _ = img.shape
+
+    # Crop the top 20%
+    top_crop = int(height * 0.2)
+    top_cropped_img = img[:top_crop, :]
+
+    # Get the middle 30% horizontally of the top 20% and save as result image
+    middle_width_start = int(width * 0.35)
+    middle_width_end = int(width * 0.65)
+    result_img = top_cropped_img[:, middle_width_start:middle_width_end]
+    cv2.imwrite(save_path_result, result_img)
+
+# Example usage
+image_path = 'field2.png'
+save_path_result = 'result.png'
+
+crop_image(image_path, save_path_result)
 
 
 def extract_numbers_from_screenshot(image_path):
